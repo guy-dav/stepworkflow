@@ -7,3 +7,24 @@ __pycache__
 # CDK asset staging directory
 .cdk.staging
 cdk.out
+
+# Python virtual environments
+.venv/
+venv/
+
+# Python cache
+__pycache__/
+*.py[cod]
+
+# Test artifacts
+.pytest_cache/
+.coverage
+htmlcov/
+
+# AWS CDK generated output
+cdk.out/
+
+# Local secrets and environment files
+.env
+.env.*
+!.env.example
