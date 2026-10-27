@@ -1,4 +1,22 @@
 
+# Step Functions Project
+
+AWS Step Functions workflow managed with AWS CDK and Python.
+
+## Run tests
+
+## powershell
+python -m pytest -v
+
+## Synthesize CloudFormation template
+cdk synth --profile dev
+
+## Review infrastructure changes
+cdk diff --profile dev
+
+## Deploy to development
+cdk deploy --profile dev
+
 # Welcome to your CDK Python project!
 
 This is a blank project for CDK development with Python.
