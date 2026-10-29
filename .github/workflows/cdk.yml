@@ -61,7 +61,9 @@ jobs:
 
     if: >-
       github.event_name == 'push' &&
-      github.ref == 'refs/heads/main'
+      github.ref == 'refs/heads/main' &&
+      vars.AWS_DEV_DEPLOY_ROLE_ARN != '' &&
+      vars.AWS_ACCOUNT_ID != ''
 
     runs-on: ubuntu-latest
 
@@ -70,7 +72,7 @@ jobs:
       id-token: write
 
     env:
-      AWS_REGION: ${{ vars.AWS_REGION }}
+      AWS_REGION: ${{ vars.AWS_REGION || 'us-east-1' }}
       EXPECTED_AWS_ACCOUNT_ID: ${{ vars.AWS_ACCOUNT_ID }}
 
     steps:
@@ -102,7 +104,7 @@ jobs:
         uses: aws-actions/configure-aws-credentials@v6.3.0
         with:
           role-to-assume: ${{ vars.AWS_DEV_DEPLOY_ROLE_ARN }}
-          aws-region: ${{ vars.AWS_REGION }}
+          aws-region: ${{ env.AWS_REGION }}
 
       - name: Verify target AWS account
         shell: bash
