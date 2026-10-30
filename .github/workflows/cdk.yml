@@ -98,6 +98,40 @@ jobs:
           python -m pip install --upgrade pip
           python -m pip install -r requirements.txt
 
+      - name: Inspect GitHub OIDC claims
+        shell: bash
+        run: |
+          TOKEN_JSON=$(curl -sS \
+            -H "Authorization: bearer ${ACTIONS_ID_TOKEN_REQUEST_TOKEN}" \
+            "${ACTIONS_ID_TOKEN_REQUEST_URL}&audience=sts.amazonaws.com")
+
+          ID_TOKEN=$(jq -r '.value' <<< "$TOKEN_JSON")
+
+          python - "$ID_TOKEN" <<'PY'
+          import base64
+          import json
+          import sys
+
+          token = sys.argv[1]
+          payload = token.split(".")[1]
+          payload += "=" * (-len(payload) % 4)
+
+          claims = json.loads(
+              base64.urlsafe_b64decode(payload)
+          )
+
+          for key in (
+              "sub",
+              "aud",
+              "repository",
+              "repository_id",
+              "repository_owner",
+              "repository_owner_id",
+              "ref"
+          ):
+              print(f"{key}: {claims.get(key)}")
+          PY
+
       - name: Configure AWS credentials using OIDC
         uses: aws-actions/configure-aws-credentials@v6.3.0
         with:
